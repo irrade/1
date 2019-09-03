@@ -12,7 +12,7 @@ STORAGE_FILE_NAME = 'data_storage.json'
 TERMS_FILE_NAME = 'phrases_ns.csv'
 
 
-def _download_terms(path):
+def _download_terms(path=PATH):
     """
     This func to download terms for random assignment
     :type path: path where the file with term is located
@@ -45,8 +45,8 @@ def _append_to_data_storage(entry):
             f.write(']'.encode())
 
            
-def _load_data_storage():
-    path_ = os.path.join(PATH, STORAGE_FILE_NAME)
+def _load_data_storage(path=PATH):
+    path_ = os.path.join(path, STORAGE_FILE_NAME)
     with open(path_, 'r') as f:
         dicts = json.load(f)
     return dicts
@@ -91,7 +91,6 @@ def main():
 @click.option('--path_', default=PATH, help='Add the path to the file of terms location')
 @main.command()
 def increment(path_=PATH):
-#    dicts = []
     terms_l = _download_terms(path_)
     for i in range(0,len(terms_l)):
         entry = {'term': str(random.choice(terms_l)), 'id': str(uuid.uuid1()), 'timestamp': datetime.now().timestamp()}
@@ -119,7 +118,6 @@ def num_arbitrary_lookback(seconds):
 @click.option('--dicts', default=_load_data_storage(), help='Add dictionary')
 @main.command()
 def most_common_term(seconds, dicts=_load_data_storage()):
-    # dicts = _load_data_storage()
     terms = []
     for current_dict in dicts:
         term_datetime = datetime.fromtimestamp(current_dict['timestamp'])
